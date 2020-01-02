@@ -8,6 +8,8 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
+import aixxe.SceneCollection;
+import aixxe.StreamController;
 import org.lwjgl.input.Mouse;
 
 import com.badlogic.gdx.*;
@@ -125,6 +127,8 @@ public class MainController extends ApplicationAdapter {
 	protected TextureRegion black;
 	protected TextureRegion white;
 
+	public final StreamController streamController = new StreamController();
+
 	public MainController(Path f, Config config, PlayerConfig player, PlayMode auto, boolean songUpdated) {
 		this.auto = auto;
 		this.config = config;
@@ -195,6 +199,12 @@ public class MainController extends ApplicationAdapter {
 		}
 
 		sound = new SystemSoundManager(config);
+
+		if (config.isEnableObsWebSocket()) {
+			streamController.scenes = config.getObsWebSocketScenes();
+			streamController.setHostDetails(config.getObsWebSocketAddress(), config.getObsWebSocketPort());
+			streamController.start();
+		}
 	}
 
 	public SkinOffset getOffset(int index) {
@@ -238,9 +248,11 @@ public class MainController extends ApplicationAdapter {
 			} else {
 				newState = selector;
 			}
+			streamController.switchScene(streamController.scenes.MusicSelect);
 			break;
 		case DECIDE:
 			newState = decide;
+			streamController.switchScene(streamController.scenes.Decide);
 			break;
 		case PLAY:
 			if (bmsplayer != null) {
@@ -248,18 +260,23 @@ public class MainController extends ApplicationAdapter {
 			}
 			bmsplayer = new BMSPlayer(this, resource);
 			newState = bmsplayer;
+			streamController.switchScene(streamController.scenes.PlayLoading);
 			break;
 		case RESULT:
 			newState = result;
+			streamController.switchScene(streamController.scenes.Result);
 			break;
 		case COURSERESULT:
 			newState = gresult;
+			streamController.switchScene(streamController.scenes.CourseResult);
 			break;
 		case CONFIG:
 			newState = keyconfig;
+			streamController.switchScene(streamController.scenes.Config);
 			break;
 		case SKINCONFIG:
 			newState = skinconfig;
+			streamController.switchScene(streamController.scenes.SkinConfig);
 			break;
 		}
 
@@ -574,6 +591,9 @@ public class MainController extends ApplicationAdapter {
 		ShaderManager.dispose();
 		if (download != null) {
 			download.dispose();
+		}
+		if (streamController != null) {
+			streamController.shutdown();
 		}
 
 		Logger.getGlobal().info("全リソース破棄完了");

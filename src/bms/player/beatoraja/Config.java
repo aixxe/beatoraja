@@ -6,6 +6,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.Arrays;
 
+import aixxe.SceneCollection;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
@@ -220,6 +221,11 @@ public class Config implements Validatable {
 			"http://stellawingroad.web.fc2.com/new/pms.html",
 			"https://excln.github.io/table24k/table.html",
 	};
+
+	private boolean enableObsWebSocket = false;
+	private String obsWebSocketAddress = "localhost";
+	private String obsWebSocketPort = "4444";
+	private SceneCollection obsWebSocketScenes;
 
 	public Config() {
 		validate();
@@ -610,6 +616,38 @@ public class Config implements Validatable {
 		this.skinpath = skinpath;
 	}
 
+	public boolean isEnableObsWebSocket() {
+		return enableObsWebSocket;
+	}
+
+	public void setEnableObsWebSocket(boolean enableObsWebSocket) {
+		this.enableObsWebSocket = enableObsWebSocket;
+	}
+
+	public String getObsWebSocketAddress() {
+		return obsWebSocketAddress;
+	}
+
+	public void setObsWebSocketAddress(String obsWebSocketAddress) {
+		this.obsWebSocketAddress = obsWebSocketAddress;
+	}
+
+	public String getObsWebSocketPort() {
+		return obsWebSocketPort;
+	}
+
+	public void setObsWebSocketPort(String obsWebSocketPort) {
+		this.obsWebSocketPort = obsWebSocketPort;
+	}
+
+	public SceneCollection getObsWebSocketScenes() {
+		return obsWebSocketScenes;
+	}
+
+	public void setObsWebSocketScenes(SceneCollection obsWebSocketScenes) {
+		this.obsWebSocketScenes = obsWebSocketScenes;
+	}
+
 	public boolean validate() {
 		if(displaymode == null) {
 			displaymode = DisplayMode.WINDOW;
@@ -656,6 +694,15 @@ public class Config implements Validatable {
 		}
 		if (ipfsurl == null) {
 			ipfsurl = "https://gateway.ipfs.io/";
+		}
+		if (obsWebSocketAddress == null) {
+			obsWebSocketAddress = "localhost";
+		}
+		if (obsWebSocketPort == null) {
+			obsWebSocketPort = "4444";
+		}
+		if (obsWebSocketScenes == null) {
+			obsWebSocketScenes = new SceneCollection();
 		}
 
 		songpath = songpath != null ? songpath : SONGPATH_DEFAULT;

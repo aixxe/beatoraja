@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.logging.Logger;
 
+import aixxe.SceneCollection;
 import com.badlogic.gdx.utils.FloatArray;
 
 import bms.model.*;
@@ -562,6 +563,7 @@ public class BMSPlayer extends MainState {
 				keyinput.startJudge(model, replay != null ? replay.keylog : null);
 				keysound.startBGPlay(model, starttimeoffset * 1000);
 				Logger.getGlobal().info("STATE_PLAYに移行");
+				main.streamController.switchScene(main.streamController.scenes.Play);
 			}
 			break;
 		// プレイ
@@ -623,6 +625,7 @@ public class BMSPlayer extends MainState {
 				main.setTimerOff(TIMER_PM_CHARA_DANCE);
 
 				Logger.getGlobal().info("STATE_FINISHEDに移行");
+				main.streamController.switchScene(main.streamController.scenes.PlayFadeOut);
 			} else if(playtime - TIME_MARGIN < ptime) {
 				main.switchTimer(TIMER_ENDOFNOTE_1P, true);
 			}
@@ -650,6 +653,7 @@ public class BMSPlayer extends MainState {
 					}
 					play(SOUND_PLAYSTOP);
 					Logger.getGlobal().info("STATE_FAILEDに移行");
+					main.streamController.switchScene(main.streamController.scenes.PlayFailed);
 					break;
 				case PlayerConfig.GAUGEAUTOSHIFT_CONTINUE:
 					break;
@@ -880,6 +884,7 @@ public class BMSPlayer extends MainState {
 			}
 			play(SOUND_PLAYSTOP);
 			Logger.getGlobal().info("STATE_FAILEDに移行");
+			main.streamController.switchScene(main.streamController.scenes.PlayFailed);
 		}
 	}
 
